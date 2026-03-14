@@ -1,215 +1,287 @@
-# AI-Based Digital Repository & Report Intelligence System  
-### QR Report System – NSTL
 
----
+QR Division Digital Report Management System
 
-## 📌 Project Overview
+An AI-powered document repository and report intelligence system designed to digitize, organize, and search technical reports. The system allows users to upload documents, extract text using OCR, generate AI summaries, and search reports through a centralized digital platform.
 
-The **AI-Based Digital Repository & Report Intelligence System** is a secure, LAN-based platform developed for the QR Division (NSTL) to digitize, store, manage, and intelligently retrieve technical reports.
+This project was developed as part of a capstone system for the QR Division (NSTL) to modernize document storage and improve report retrieval.
 
-The system centralizes physical and digital reports, enables OCR-based text extraction, generates AI-powered summaries, and provides role-based access control for secure internal usage.
+⸻
 
----
+Project Features
 
-## 🎯 Key Objectives
+Document Upload
 
-- Digitize legacy paper reports
-- Centralize document storage
-- Enable OCR-based searchable text
-- Generate AI-powered report summaries
-- Support keyword-based search
-- Enforce role-based access control (RBAC)
-- Operate within a secure LAN environment
+Users can upload reports with required metadata including:
+	•	Document ID
+	•	Report Name
+	•	Report Type
+	•	Prepared By
+	•	Report Date
+	•	File Attachment
 
----
+Supported file types:
+	•	PDF
+	•	DOCX
+	•	TXT
+	•	PPTX
+	•	JPG
+	•	PNG
 
-## 🏗️ System Architecture
+⸻
 
-Upload → File Storage → OCR → AI Summary → MongoDB → Search
+OCR Text Extraction
 
-### Components
+The system automatically extracts text from documents:
+	•	Direct text extraction for digital PDFs
+	•	OCR processing for scanned PDFs and images
+	•	Supports multiple document formats
 
-- Frontend: HTML, CSS, JavaScript, Bootstrap
-- Backend: Flask (Python)
-- Database: MongoDB
-- OCR Engine: Tesseract OCR
-- AI Engine: Hugging Face Transformers (DistilBART Model)
-- Deployment: Docker + NGINX + Gunicorn (Planned)
+OCR is implemented using Tesseract OCR.
 
----
+⸻
 
-## 📂 Project Structure
+AI Report Summarization
 
-QR_REPORT_SYSTEM/
+Once text is extracted, the system generates a short AI summary using a transformer-based summarization model.
+
+Model used:
+
+sshleifer/distilbart-cnn-12-6
+
+The summarization pipeline:
+	1.	Extract document text
+	2.	Clean and preprocess text
+	3.	Split large documents into chunks
+	4.	Generate partial summaries
+	5.	Combine summaries into a final report summary
+
+⸻
+
+Intelligent Report Search
+
+Users can search reports using keywords.
+
+Search is performed on:
+	•	Report name
+	•	Extracted OCR text
+
+Search results display:
+	•	Report title
+	•	AI-generated summary
+	•	Button to open the report
+
+⸻
+
+Dashboard Report Management
+
+The dashboard provides an overview of all reports in the system.
+
+Features include:
+	•	List of all uploaded reports
+	•	Short AI summaries
+	•	View full summary
+	•	Open report file
+	•	Delete report
+
+Statistics displayed:
+	•	Total reports
+	•	Reports with AI summaries
+
+⸻
+
+Responsive User Interface
+
+The frontend is designed to be simple and responsive using:
+	•	HTML
+	•	CSS
+	•	Bootstrap
+	•	JavaScript
+
+Key UI features:
+	•	Upload form with validation
+	•	Enter-key search functionality
+	•	Summary preview
+	•	Modal for viewing full report summaries
+	•	Dashboard report table
+
+⸻
+
+System Architecture
+
+Frontend
+   |
+   | (HTTP Requests)
+   |
+Flask Backend
+   |
+   |---- OCR Service (Tesseract)
+   |---- AI Summarization (Transformers)
+   |
+MongoDB Database
+   |
+File Storage (Uploads Folder)
+
+
+⸻
+
+Tech Stack
+
+Frontend
+	•	HTML
+	•	CSS
+	•	Bootstrap
+	•	JavaScript
+
+Backend
+	•	Python
+	•	Flask
+
+AI & NLP
+	•	HuggingFace Transformers
+	•	DistilBART Summarization Model
+
+OCR
+	•	Tesseract OCR
+	•	pdf2image
+
+Database
+	•	MongoDB
+
+File Handling
+	•	PyPDF2
+	•	python-docx
+	•	python-pptx
+
+⸻
+
+Project Structure
+
+QR_Report_System
 │
 ├── app.py
 ├── config.py
-├── requirements.txt
 │
-├── models/
-│   ├── report_model.py
-│   └── user_model.py
-│
-├── routes/
+├── routes
 │   ├── report_routes.py
 │   └── auth_routes.py
 │
-├── services/
+├── services
+│   ├── ai_service.py
 │   ├── ocr_service.py
-│   ├── storage_service.py
-│   └── ai_service.py
+│   └── storage_service.py
 │
-├── uploads/
-└── venv/
+├── models
+│   └── report_model.py
+│
+├── static
+│   ├── css
+│   │   └── style.css
+│   └── js
+│       └── main.js
+│
+├── templates
+│   ├── dashboard.html
+│   ├── upload.html
+│   └── search.html
+│
+└── uploads
+    └── reports
 
----
 
-## 🧠 AI Module
+⸻
 
-The AI module:
+Installation & Setup
 
-- Uses the model: sshleifer/distilbart-cnn-12-6
-- Generates concise summaries from OCR extracted text
-- Handles long technical documents using chunking
-- Loads the model once for performance efficiency
-- Runs offline after the initial model download
+1. Clone Repository
 
-### AI Workflow
+git clone https://github.com/yourusername/qr-report-system.git
+cd qr-report-system
 
-1. OCR extracts raw text from uploaded document  
-2. Text is cleaned and preprocessed  
-3. Long documents are split into chunks  
-4. Each chunk is summarized  
-5. Final compressed summary is generated  
-6. Summary is stored in MongoDB under `ai_summary`
 
----
+⸻
 
-## 🔐 Role-Based Access Control
+2. Create Virtual Environment
 
-| Role     | Access Level |
-|----------|--------------|
-| Admin    | Full access |
-| Manager  | Restricted access |
-| Operator | Limited upload/view access |
+python -m venv venv
 
-All upload, view, and edit actions are logged for auditing.
+Activate:
 
----
+Windows
 
-## 🚀 How to Run the Project
+venv\Scripts\activate
 
-### 1. Clone the Repository
+Mac/Linux
 
-git clone <your-repository-url>  
-cd QR_Report_System  
+source venv/bin/activate
 
----
 
-### 2. Create Virtual Environment
+⸻
 
-python -m venv venv  
-venv\Scripts\activate   (Windows)
+3. Install Dependencies
 
----
+pip install flask pymongo transformers torch pytesseract pdf2image pillow PyPDF2 python-docx python-pptx
 
-### 3. Install Dependencies
 
-pip install -r requirements.txt  
-pip install transformers torch sentencepiece  
+⸻
 
----
+4. Install Tesseract OCR
 
-### 4. Run the Application
+Download:
 
-python app.py  
+https://github.com/tesseract-ocr/tesseract
 
-Open in browser:  
-http://127.0.0.1:5000  
+Set the path in ocr_service.py.
 
----
+⸻
 
-## 📤 Upload API
+5. Install Poppler (for PDF OCR)
 
-Endpoint:  
-POST /upload-report  
+Download Poppler and update the path inside ocr_service.py.
 
-Required Fields:
+⸻
 
-- document_id
-- report_name
-- report_type
-- prepared_by
-- report_date
-- file (PDF/Image)
+6. Start MongoDB
 
----
+Ensure MongoDB is running locally:
 
-## 🔎 Search API
+mongodb://localhost:27017
 
-Endpoint:  
-GET /search?q=keyword  
 
-Searches across:
-- Report name
-- OCR extracted text
+⸻
 
----
+7. Run Application
 
-## 🗄️ MongoDB Document Structure
+python app.py
 
-{
-  "document_id": "TEST001",
-  "report_name": "Vibration Analysis Report",
-  "report_type": "Technical",
-  "prepared_by": "Engineer",
-  "report_date": "2026-02-26",
-  "file_path": "uploads/reports/...",
-  "ocr_text": "...",
-  "ai_summary": "Generated AI summary...",
-  "created_at": "timestamp"
-}
+Open in browser:
 
----
+http://127.0.0.1:5000
 
-## 🧪 Testing Scenarios
 
-- Validate mandatory fields before upload
-- Prevent duplicate document IDs
-- Verify OCR text extraction
-- Verify AI summary generation
-- Verify MongoDB insertion
-- Verify search functionality
+⸻
 
----
+Example Workflow
+	1.	Upload a report
+	2.	System extracts text using OCR
+	3.	AI generates a summary
+	4.	Report is stored in MongoDB
+	5.	User can search and retrieve reports
+	6.	Dashboard displays all reports and summaries
 
-## 🔒 Security Features
+⸻
 
-- LAN-based deployment
-- Role-based authentication
-- Secure file handling
-- Encrypted document storage
-- Audit logging of user actions
-- Regular backup support
+Future Improvements
 
----
+Potential upgrades include:
+	•	Semantic search using embeddings
+	•	Vector database for AI document retrieval
+	•	Document chat interface
+	•	Role-based authentication
+	•	Advanced analytics dashboard
 
-## 📈 Future Enhancements
+⸻
 
-- Natural language query search
-- AI-powered ranking
-- Summary preview in UI
-- Advanced filtering options
-- Dockerized production deployment
+Author
 
----
+Developed as part of a Digital Repository & AI Report Intelligence System project.
 
-## 👩‍💻 Contributors
-
-QR Division Report Management System Development Team
-
----
-
-## 📜 License
-
-For academic and internal organizational use only.
