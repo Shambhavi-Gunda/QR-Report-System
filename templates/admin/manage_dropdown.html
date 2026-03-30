@@ -1,0 +1,52 @@
+{% extends "layouts/base.html" %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h3>Manage Dropdown</h3>
+
+    <input id="value" class="form-control mb-2" placeholder="Enter value">
+    <button class="btn btn-primary" onclick="add()">Add</button>
+
+    <ul id="list" class="mt-3"></ul>
+
+</div>
+
+<script>
+
+const field = "{{ field }}";
+
+function load(){
+
+    fetch('/api/dropdowns')
+    .then(res => res.json())
+    .then(data => {
+
+        let list = document.getElementById("list");
+        list.innerHTML = "";
+
+        (data[field] || []).forEach(v => {
+            list.innerHTML += `<li>${v}</li>`;
+        });
+    });
+}
+
+async function add(){
+
+    let value = document.getElementById("value").value;
+
+    await fetch(`/api/add-dropdown/${field}`, {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({value})
+    });
+
+    load();
+}
+
+load();
+
+</script>
+
+{% endblock %}

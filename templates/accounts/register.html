@@ -1,0 +1,104 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} Register {% endblock %}
+
+{% block content %}
+
+<main>
+    <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
+        <div class="container">
+            <div class="row justify-content-center">
+
+                <div class="col-12 col-md-6 col-lg-5">
+
+                    <div class="card shadow border-0 rounded-lg">
+
+                        <div class="card-body p-4">
+
+                            <h3 class="text-center mb-4 fw-bold">Create Account 🚀</h3>
+
+                            <form onsubmit="register(event)">
+
+                                <!-- Username -->
+                                <div class="form-group mb-3">
+                                    <label>Username</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">👤</span>
+                                        <input type="text" id="username"
+                                               class="form-control"
+                                               placeholder="Choose username"
+                                               required>
+                                    </div>
+                                </div>
+
+                                <!-- Password -->
+                                <div class="form-group mb-3">
+                                    <label>Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">🔒</span>
+                                        <input type="password" id="password"
+                                               class="form-control"
+                                               placeholder="Create password"
+                                               required>
+                                    </div>
+                                </div>
+
+                                <!-- 🔥 ROLE REMOVED -->
+
+                                <div class="d-grid">
+                                    <button class="btn btn-primary">
+                                        Register
+                                    </button>
+                                </div>
+
+                            </form>
+
+                            <div class="text-center mt-4">
+                                <small>
+                                    Already have an account?
+                                    <a href="/login" class="fw-bold">Login</a>
+                                </small>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+
+<!-- 🔥 REGISTER JS (UPDATED) -->
+<script>
+async function register(e){
+    e.preventDefault();
+
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try{
+        const res = await fetch("/api/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ username, password }) // ❌ role removed
+        });
+
+        const data = await res.json();
+
+        if(res.ok){
+            alert("Registered successfully!");
+            window.location.href = "/login";
+        } else {
+            alert(data.error);
+        }
+
+    } catch(err){
+        alert("Server error");
+    }
+}
+</script>
+
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} Dashboard {% endblock %}
+
+{% block content %}
+
+<div class="py-4">
+    <h2 id="welcomeText">Welcome, Admin</h2>
+</div>  
+
+<div class="row">
+
+    <!-- Total Reports -->
+    <div class="col-md-4">
+        <div class="card shadow p-3">
+            <h5>Total Reports</h5>
+            <h2 id="totalReports">0</h2>
+        </div>
+    </div>
+
+    <!-- Upload Graph -->
+    <div class="col-md-8">
+        <div class="card shadow p-3">
+            <h5>Uploads Trend</h5>
+            <canvas id="uploadChart"></canvas>
+        </div>
+    </div>
+
+</div>
+
+<hr>
+
+<!-- Recent Uploads -->
+<div class="card shadow mt-4">
+    <div class="card-header">
+        <h5>Recent Uploads</h5>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Document ID</th>
+                    <th>Report Name</th>
+                    <th>Type</th>
+                    <th>Division</th>
+                    <th>Date</th>
+                    <th>Author</th>
+                </tr>
+            </thead>
+            <tbody id="uploadTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Recent Searches -->
+<div class="card shadow mt-4">
+    <div class="card-header">
+        <h5>Recent Searches</h5>
+    </div>
+    <div class="card-body">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Document ID</th>
+                    <th>Report Name</th>
+                    <th>Type</th>
+                    <th>Division</th>
+                    <th>Date</th>
+                    <th>Author</th>
+                </tr>
+            </thead>
+            <tbody id="searchTable"></tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+
+// Welcome
+document.getElementById("welcomeText").innerText = "Welcome, Admin";
+
+// Stats
+fetch('/api/stats')
+.then(res => res.json())
+.then(data => {
+    document.getElementById('totalReports').innerText = data.total_reports;
+});
+
+// Graph
+fetch('/api/upload-trend')
+.then(res => res.json())
+.then(data => {
+
+    const ctx = document.getElementById('uploadChart').getContext('2d');
+
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.labels,
+            datasets: [{
+                label: 'Uploads',
+                data: data.values,
+                borderWidth: 2,
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            }
+        }
+    });
+
+});
+
+// Recent Uploads (5)
+fetch('/api/recent-uploads')
+.then(res => res.json())
+.then(data => {
+
+    let table = document.getElementById('uploadTable');
+    table.innerHTML = '';
+
+    data.forEach(report => {
+        table.innerHTML += `
+            <tr>
+                <td>${report.document_id}</td>
+                <td>${report.report_name}</td>
+                <td>${report.report_type}</td>
+                <td>${report.division || '-'}</td>
+                <td>${report.report_date}</td>
+                <td>${report.prepared_by || '-'}</td>
+            </tr>
+        `;
+    });
+
+});
+
+// ✅ ONLY FIX HERE
+// Recent Searches (5)
+fetch('/api/recent-searches')
+.then(res => res.json())
+.then(data => {
+
+    let table = document.getElementById('searchTable');
+    table.innerHTML = '';
+
+    data.forEach(item => {
+        table.innerHTML += `
+            <tr>
+                <td>${item.document_id || '-'}</td>
+                <td>${item.report_name || '-'}</td>
+                <td>${item.report_type || '-'}</td>
+                <td>${item.division || '-'}</td>
+                <td>${item.date || '-'}</td>   <!-- FIXED -->
+                <td>${item.user || 'Admin'}</td> <!-- FIXED -->
+            </tr>
+        `;
+    });
+
+});
+
+</script>
+
+{% endblock content %}
