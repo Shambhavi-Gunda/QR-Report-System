@@ -141,7 +141,7 @@ def upload_report():
 
     # OCR + AI
     extracted_text = ""
-    ai_summary = ""
+    ai_summary = "No summary available"
 
     try:
         for path in file_paths:
@@ -149,6 +149,8 @@ def upload_report():
 
         if extracted_text.strip():
             ai_summary = generate_summary(extracted_text[:3000])
+        else:
+            ai_summary = "No summary avaliable"
 
     except Exception as e:
         print("OCR error:", e)

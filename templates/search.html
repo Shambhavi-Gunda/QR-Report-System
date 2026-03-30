@@ -99,6 +99,14 @@
 .dropdown-menu-custom a:hover {
     background: #f5f5f5;
 }
+
+/* ✅ ONLY ADDED THIS */
+.view-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    border-radius: 8px;
+    font-weight: 500;
+}
 </style>
 
 <script>
@@ -149,7 +157,6 @@ function renderTable(){
 
     pageData.forEach(r => {
 
-        // FIXED URL (important)
         let fileUrl = (r.files && r.files.length > 0)
             ? `/api/${r.files[0]}`
             : "#";
@@ -164,10 +171,11 @@ function renderTable(){
 
             <td style="position: relative;">
 
-                <button class="btn btn-sm btn-primary me-2"
-                    onclick="showSummary('${r.ai_summary || 'No summary available'}', '${fileUrl}')">
-                    View
-                </button>
+                <!-- ✅ FIXED + BIGGER BUTTON -->
+            <button class="view-btn me-2"
+                onclick='showSummary(${JSON.stringify(r.ai_summary || "No summary available")}, "${fileUrl}")'>
+                View
+            </button>
 
                 <button class="btn btn-sm btn-outline-secondary"
                     onclick="toggleMenu('${r.document_id}')">
@@ -295,7 +303,7 @@ function editReport(id){
 }
 
 
-// 🔥 FIXED SEARCH LOGGING (ONLY CHANGE)
+// SEARCH LOGGING
 document.getElementById("searchBox").addEventListener("input", function(){
 
     let keyword = this.value.toLowerCase();
@@ -304,7 +312,6 @@ document.getElementById("searchBox").addEventListener("input", function(){
 
     if(keyword.trim() !== ""){
 
-        // 🔥 Log FIRST MATCHED RESULT (important)
         let first = filteredReports[0];
 
         fetch('/api/log-search', {
